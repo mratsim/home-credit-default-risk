@@ -1,0 +1,13 @@
+*.csv
+*.7z
+*.jpg
+*.h5
+*.npy
+*.npz
+*.zip
+*.log
+EDA/
+.ipynb_checkpoints/
+__pycache__/
+inputs/
+outputs/
