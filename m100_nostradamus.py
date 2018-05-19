@@ -30,14 +30,14 @@ db_conn    = sqlite3.connect("./inputs/inputs.db")
 #       but let's have faith in Python GC
 
 # Import data
-df_train = pd.read_sql_query("select SK_ID_CURR, TARGET from application_train;", db_conn)
+df_train = pd.read_sql_query("select SK_ID_CURR, TARGET from application_train order by SK_ID_CURR;", db_conn)
 print('Input training data has shape: ',df_train.shape)
 
 X = df_train[['SK_ID_CURR']]
 y = df_train[['TARGET']]
 del df_train
 
-X_test = pd.read_sql_query("select SK_ID_CURR from application_test;", db_conn)
+X_test = pd.read_sql_query("select SK_ID_CURR from application_test order by SK_ID_CURR;", db_conn)
 
 # Create folds
 cv = StratifiedKFold(n_splits=7, shuffle=True, random_state=1337)

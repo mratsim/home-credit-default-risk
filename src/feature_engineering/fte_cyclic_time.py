@@ -24,7 +24,9 @@ def fte_cyclic_time(train, test, y, db_conn, folds, cache_file):
       end dayOfWeek,
       HOUR_APPR_PROCESS_START
     from
-      {table};
+      {table}
+    order by
+      SK_ID_CURR ASC;
     """
 
     df[['isOccidentalWeekend', 'dayOfWeek', 'HOUR_APPR_PROCESS_START']] = pd.read_sql_query(query, db_conn)

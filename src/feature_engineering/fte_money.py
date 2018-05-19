@@ -12,7 +12,9 @@ def fte_income_ratios(train, test, y, db_conn, folds, cache_file):
       AMT_INCOME_TOTAL,
       AMT_ANNUITY
     from
-      {table};
+      {table}
+    order by
+      SK_ID_CURR ASC;
     """
 
     df[['credit_income_ratio', 'annuity_income_ratio', 'AMT_CREDIT', 'AMT_INCOME_TOTAL', 'AMT_ANNUITY']] = pd.read_sql_query(query, db_conn)
@@ -29,7 +31,9 @@ def fte_goods_price(train, test, y, db_conn, folds, cache_file):
       AMT_GOODS_PRICE,
       AMT_CREDIT / AMT_GOODS_PRICE AS credit_price_ratio
     from
-      {table};
+      {table}
+    order by
+      SK_ID_CURR ASC;
     """
 
     df[['AMT_GOODS_PRICE', 'credit_price_ratio']] = pd.read_sql_query(query, db_conn)
