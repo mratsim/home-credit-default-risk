@@ -1,3 +1,5 @@
+# Copyright 2018 Mamy André-Ratsimbazafy. All rights reserved.
+
 import numpy as np
 import xgboost as xgb
 import time
