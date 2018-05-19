@@ -45,6 +45,7 @@ folds = list(cv.split(X,y))
 
 # Pipeline processing
 X, X_test, _, _, _, _ = pipe_transforms(X, X_test, y, db_conn, folds, cache_file)
+print('After preprocessing data shape is: ', X.shape)
 
 ##############################
 # Setup basic XGBoost and validation
