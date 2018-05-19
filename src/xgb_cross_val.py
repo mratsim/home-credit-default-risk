@@ -3,8 +3,8 @@ import xgboost as xgb
 import time
 
 #Ideally cross val split should be done before feature engineering, and feature engineering + selection should be done separately for each splits so it better mimics out-of-sample predictions
-def cross_val_xgb(params, X, y, folds, metric):
-    n =1
+def xgb_cross_val(params, X, y, folds, metric):
+    n = 1
     num_rounds = 3000
 
     list_rounds = []
@@ -28,7 +28,7 @@ def cross_val_xgb(params, X, y, folds, metric):
 
         list_rounds.append(rounds)
         list_scores.append(score)
-        n +=1
+        n += 1
 
     mean_score = np.mean(list_scores)
     std_score = np.std(list_scores)
