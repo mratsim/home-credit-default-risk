@@ -7,7 +7,7 @@ def fte_region(train, test, y, db_conn, folds, cache_file):
     query = f"""
     select
       REGION_POPULATION_RELATIVE,
-      REGION_RATING_CLIENT,
+      --REGION_RATING_CLIENT,
       REGION_RATING_CLIENT_W_CITY,
       REG_CITY_NOT_LIVE_CITY,
       --REG_CITY_NOT_WORK_CITY,
@@ -21,7 +21,7 @@ def fte_region(train, test, y, db_conn, folds, cache_file):
     """
 
     df[['REGION_POPULATION_RELATIVE',
-        'REGION_RATING_CLIENT',
+        # 'REGION_RATING_CLIENT',
         'REGION_RATING_CLIENT_W_CITY',
         'REG_CITY_NOT_LIVE_CITY',
         # 'REG_CITY_NOT_WORK_CITY',

@@ -33,10 +33,10 @@ def fte_cyclic_time(train, test, y, db_conn, folds, cache_file):
       # 'isOccidentalWeekend',
       'dayOfWeek',
       'HOUR_APPR_PROCESS_START']] = pd.read_sql_query(query, db_conn)
-    df['cos_dayOfWeek'] = np.cos(df['dayOfWeek'] / 7 * 2 * np.pi)
-    df['sin_dayOfWeek'] = np.sin(df['dayOfWeek'] / 7 * 2 * np.pi)
-    df['cos_hour_start'] = np.cos(df['HOUR_APPR_PROCESS_START'] / 24 * 2 * np.pi)
-    df['sin_hour_start'] = np.sin(df['HOUR_APPR_PROCESS_START'] / 24 * 2 * np.pi)
+    # df['cos_dayOfWeek'] = np.cos(df['dayOfWeek'] / 7 * 2 * np.pi)
+    # df['sin_dayOfWeek'] = np.sin(df['dayOfWeek'] / 7 * 2 * np.pi)
+    # df['cos_hour_start'] = np.cos(df['HOUR_APPR_PROCESS_START'] / 24 * 2 * np.pi)
+    # df['sin_hour_start'] = np.sin(df['HOUR_APPR_PROCESS_START'] / 24 * 2 * np.pi)
 
   _trans(train, "application_train")
   _trans(test, "application_test")
