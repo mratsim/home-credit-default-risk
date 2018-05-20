@@ -11,6 +11,7 @@ from src.feature_extraction.fte_ext_source import fte_ext_source
 from src.feature_extraction.fte_family import fte_family_situation
 from src.feature_extraction.fte_credit_inquiries import fte_credit_inquiries
 from src.feature_extraction.fte_region import fte_region
+from src.feature_extraction.fte_building import fte_building
 
 pipe_transforms = feat_extraction_pipe(
   fte_income_ratios,
@@ -23,5 +24,6 @@ pipe_transforms = feat_extraction_pipe(
   fte_family_situation,
   fte_prev_credit_situation,
   fte_region,
-  fte_credit_inquiries
+  fte_credit_inquiries,
+  fte_building
 )
