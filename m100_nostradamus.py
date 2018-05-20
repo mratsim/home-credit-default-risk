@@ -47,6 +47,9 @@ folds = list(cv.split(X,y))
 X, X_test, _, _, _, _ = pipe_transforms(X, X_test, y, db_conn, folds, cache_file)
 print('After preprocessing data shape is: ', X.shape)
 
+end_time = timer()
+print("Preprocessing time: %s" % (end_time - start_time))
+
 ##############################
 # Setup basic XGBoost and validation
 # Validation is used to get an unique name only
@@ -73,7 +76,7 @@ xgb_params = list(xgb_params.items())
 x_trn, x_val, y_trn, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train and validate
-print("############ Validation, Cross-Validation and Final Classifier ######################")
+print("\n############ Validation, Cross-Validation and Final Classifier ######################")
 clf, metric, n_stop = xgb_train_cv(x_trn, x_val, y_trn, y_val, X, y, xgb_params, folds)
 
 # Output
