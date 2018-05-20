@@ -15,10 +15,10 @@ def fte_building(train, test, y, db_conn, folds, cache_file):
       TOTALAREA_MODE,
       APARTMENTS_AVG,
       COMMONAREA_AVG,
-      NONLIVINGAREA_MEDI,
-      LIVINGAPARTMENTS_MODE,
-      YEARS_BUILD_MODE,
-      ENTRANCES_AVG
+      NONLIVINGAREA_MEDI
+      --LIVINGAPARTMENTS_MODE,
+      --YEARS_BUILD_MODE,
+      --ENTRANCES_AVG
     from
       {table}
     ORDER BY
@@ -35,9 +35,10 @@ def fte_building(train, test, y, db_conn, folds, cache_file):
         'APARTMENTS_AVG',
         'COMMONAREA_AVG',
         'NONLIVINGAREA_MEDI',
-        'LIVINGAPARTMENTS_MODE',
-        'YEARS_BUILD_MODE',
-        'ENTRANCES_AVG']] = pd.read_sql_query(query, db_conn)
+        # 'LIVINGAPARTMENTS_MODE',
+        # 'YEARS_BUILD_MODE',
+        # 'ENTRANCES_AVG'
+        ]] = pd.read_sql_query(query, db_conn)
 
   _trans(train, "application_train")
   _trans(test, "application_test")
