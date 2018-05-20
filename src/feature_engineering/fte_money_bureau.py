@@ -21,6 +21,8 @@ def fte_prev_credit_situation(train, test, y, db_conn, folds, cache_file):
 
     df[['total_prev_credit', 'active_credit_amount', 'current_debt']] = pd.read_sql_query(query, db_conn)
 
+    # TODO add currency, otherwise credit is not comparable
+
   _trans(train, "application_train")
   _trans(test, "application_test")
 
