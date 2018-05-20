@@ -6,13 +6,16 @@ import pandas as pd
 def encode_categoricals(df, db_conn, table, field):
   # I don't use Scikit-learn CategoricalEncoder or LabelBinarizer
   # Too much overhead, stateful, slow.
+
+  # Alternative: Pandas factorize but we can specify order
+  #              which is useful when we have Business type 1 and Business type 2 ...
   query_mapper = f"""
   select
     distinct {field}
   from
     {table}
   order by
-    ORGANIZATION_TYPE ASC;
+    {field} ASC;
   """
 
   df_mapper = pd.read_sql_query(query_mapper, db_conn)

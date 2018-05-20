@@ -2,35 +2,12 @@
 
 import pandas as pd
 import numpy as np
+from src.categorical_encoder import encode_categoricals
 
 def fte_organisation(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
-    query_mapper = f"""
-    select
-      distinct ORGANIZATION_TYPE
-    from
-      {table}
-    order by
-      ORGANIZATION_TYPE ASC;
-    """
-
-    df_mapper = pd.read_sql_query(query_mapper, db_conn)
-
-    # Replace labels by their ID.
-    # Note that "Industry: type 10" comes before "Industry: type 2"
-    dict_mapper = {label: index for (index, label) in df_mapper['ORGANIZATION_TYPE'].iteritems()}
-    dict_mapper['XNA'] = np.nan
-
-    query = f"""
-    select
-      ORGANIZATION_TYPE
-    from
-      {table}
-    order by
-      SK_ID_CURR ASC;
-    """
-
-    df['org_type'] = pd.read_sql_query(query, db_conn)['ORGANIZATION_TYPE'].map(dict_mapper)
+    df['occupation_type']  = encode_categoricals(df, db_conn, table, 'OCCUPATION_TYPE')
+    df['organisation_type']  = encode_categoricals(df, db_conn, table, 'ORGANIZATION_TYPE')
 
   _trans(train, "application_train")
   _trans(test, "application_test")
