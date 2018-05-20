@@ -63,7 +63,7 @@ x_trn, x_val, y_trn, y_val = train_test_split(X, y, test_size=0.2, random_state=
 print("############ Validation, Cross-Validation and Final Classifier ######################")
 clf, metric, n_stop = xgb_train_cv(x_trn, x_val, y_trn, y_val, X, y, xgb_params, folds)
 
-# Output
+# Output + feature importance
 df_test = pd.read_csv(open("./inputs/application_test.csv", "r"))
 for feat, encoder in zip(categoricals, encoders):
     df_test[feat] = encoder.transform(df_test[feat].astype('str'))
