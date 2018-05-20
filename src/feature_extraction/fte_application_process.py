@@ -1,6 +1,7 @@
 # Copyright 2018 Mamy André-Ratsimbazafy. All rights reserved.
 
 import pandas as pd
+from src.encoders import encode_categoricals
 
 def fte_application_process(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):

@@ -31,7 +31,8 @@ pipe_transforms = feat_engineering_pipe(
   fte_building,
   fte_social_circle_default,
   fte_work_phone,
-  fte_application_process,
   fte_bureau_credit_situation,
-  fte_prev_app_process
+  fte_prev_app_process,
+  fte_application_process,
+  fte_contract
 )

@@ -2,7 +2,7 @@
 
 import pandas as pd
 import numpy as np
-from src.categorical_encoder import encode_categoricals
+from src.encoders import encode_categoricals
 
 def fte_organisation(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
