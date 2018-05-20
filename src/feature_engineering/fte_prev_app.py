@@ -1,6 +1,7 @@
 # Copyright 2018 Mamy André-Ratsimbazafy. All rights reserved.
 
 import pandas as pd
+from src.encoders import encode_average
 
 def fte_prev_credit_situation(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
@@ -95,6 +96,16 @@ def fte_prev_app_process(train, test, y, db_conn, folds, cache_file):
         ]] = pd.read_sql_query(query, db_conn)
 
     # TODO add currency, otherwise credit is not comparable
+
+  _trans(train, "application_train")
+  _trans(test, "application_test")
+
+  return train, test, y, db_conn, folds, cache_file
+
+def fte_sales_channels(train, test, y, db_conn, folds, cache_file):
+  def _trans(df, table):
+    df['prev_avg_seller_size'] = encode_average(df, db_conn, table, 'previous_application', 'SELLERPLACE_AREA')
+    df['prev_avg_channel_size'] = encode_average(df, db_conn, table, 'previous_application', 'CHANNEL_TYPE')
 
   _trans(train, "application_train")
   _trans(test, "application_test")
