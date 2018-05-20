@@ -16,7 +16,7 @@ def fte_bureau_credit_situation(train, test, y, db_conn, folds, cache_file):
       IFNULL(min(-DAYS_CREDIT), 99 * 365.25) / 365.25 AS b_last_credit_years_ago,
       IFNULL(max(DAYS_CREDIT_ENDDATE), -99 * 365.25) / 365.25 AS b_existing_credit_close_date,
       IFNULL(max(-DAYS_ENDDATE_FACT), 99 * 365.25) / 365.25 AS b_years_since_no_card_credit,
-      IFNULL(min(-DAYS_CREDIT_UPDATE), 0) AS b_last_DAYS_CREDIT_UPDATE
+      IFNULL(min(-DAYS_CREDIT_UPDATE), 99 * 365.25) AS b_last_DAYS_CREDIT_UPDATE
     from
       {table} app
     left join
