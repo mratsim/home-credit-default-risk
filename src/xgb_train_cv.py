@@ -14,7 +14,7 @@ def _clf_xgb(x_trn, x_val, y_trn, y_val, xgb_params, seed_val=0, num_rounds=4096
     print('Start Validation training on 80% of the dataset...')
     # train
     watchlist = [ (xgtest, 'test') ]
-    model = xgb.train(xgb_params, xgtrain, num_rounds, watchlist, early_stopping_rounds=100)
+    model = xgb.train(xgb_params, xgtrain, num_rounds, watchlist, early_stopping_rounds=50)
     print('End trainind on 80% of the dataset...')
     print('Start validating prediction on 20% unseen data')
     # predict

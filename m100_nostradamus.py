@@ -53,16 +53,17 @@ print('After preprocessing data shape is: ', X.shape)
 # Model performance will be measured by proper Cross-Validation
 
 xgb_params                     = {}
+xgb_params['seed']             = 1337
 xgb_params['objective']        = 'binary:logistic'
-xgb_params['eta']              = 0.1
+xgb_params['eta']              = 0.05
 xgb_params['max_depth']        = 4
 xgb_params['silent']           = 1
 xgb_params['eval_metric']      = "auc"
 xgb_params['min_child_weight'] = 1
 xgb_params['subsample']        = 0.7
-xgb_params['colsample_bytree'] = 0.5
-xgb_params['seed']             = 1337
+xgb_params['colsample_bytree'] = 0.7
 xgb_params['tree_method']      = 'gpu_hist'
+xgb_params['grow_policy']      = 'depthwise'
 
 xgb_params = list(xgb_params.items())
 
