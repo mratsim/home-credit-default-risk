@@ -13,14 +13,15 @@ def fte_age(train, test, y, db_conn, folds, cache_file):
       case DAYS_LAST_PHONE_CHANGE
         when 0 then NULL
         else -DAYS_LAST_PHONE_CHANGE / 365.25
-      end years_last_phone_change
+      end years_last_phone_change,
+      OWN_CAR_AGE
     from
       {table}
     order by
       SK_ID_CURR ASC;
     """
 
-    df[['years_birth', 'years_employed', 'years_registration', 'years_id_publish', 'years_last_phone_change']] = pd.read_sql_query(query, db_conn)
+    df[['years_birth', 'years_employed', 'years_registration', 'years_id_publish', 'years_last_phone_change', 'OWN_CAR_AGE']] = pd.read_sql_query(query, db_conn)
 
   _trans(train, "application_train")
   _trans(test, "application_test")
