@@ -41,7 +41,7 @@ def _concat_col(*list_of_arrays):
     return np.hstack(list_of_arrays)
 
 # pipe functions, reverse the order so that it's in the usual FIFO function order
-def feat_extraction_pipe(*funcs):
+def feat_engineering_pipe(*funcs):
     return compose(*reversed(funcs))
 
 def feat_selection(ft_selection, df_train, df_val_test, y=None,out_type=None):

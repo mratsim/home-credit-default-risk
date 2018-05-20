@@ -13,7 +13,7 @@ from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import LabelEncoder
 
-from m110_feat_extraction_pipeline import pipe_transforms
+from m110_feat_engineering_pipeline import pipe_transforms
 from src.xgb_output import xgb_output
 from src.xgb_train_cv import xgb_train_cv
 

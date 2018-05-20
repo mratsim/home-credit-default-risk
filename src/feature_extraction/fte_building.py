@@ -6,6 +6,8 @@ def fte_building(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
     query = f"""
     select
+      FLOORSMAX_AVG,
+      FLOORSMIN_AVG,
       LIVINGAREA_MODE,
       YEARS_BEGINEXPLUATATION_MODE,
       LANDAREA_MODE,
@@ -20,7 +22,9 @@ def fte_building(train, test, y, db_conn, folds, cache_file):
       SK_ID_CURR ASC
     """
 
-    df[['LIVINGAREA_MODE',
+    df[['FLOORSMAX_AVG',
+        'FLOORSMIN_AVG',
+        'LIVINGAREA_MODE',
         'YEARS_BEGINEXPLUATATION_MODE',
         'LANDAREA_MODE',
         'BASEMENTAREA_MODE',

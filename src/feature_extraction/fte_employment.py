@@ -13,3 +13,19 @@ def fte_organisation(train, test, y, db_conn, folds, cache_file):
   _trans(test, "application_test")
 
   return train, test, y, db_conn, folds, cache_file
+
+
+def fte_work_phone(train, test, y, db_conn, folds, cache_file):
+  def _trans(df, table):
+    query = f"""
+    select
+      FLAG_WORK_PHONE
+    from
+      {table}
+    order by
+      SK_ID_CURR ASC;
+    """
+
+    df['FLAG_WORK_PHONE'] = pd.read_sql_query(query, db_conn)
+
+  return train, test, y, db_conn, folds, cache_file
