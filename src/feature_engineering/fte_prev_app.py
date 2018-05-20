@@ -12,7 +12,12 @@ def fte_prev_credit_situation(train, test, y, db_conn, folds, cache_file):
       IFNULL(sum(case(p.NAME_CONTRACT_STATUS) when 'Canceled' then 1 else 0 end), 0) AS total_application_canceled,
       IFNULL(sum(case(p.NAME_CONTRACT_STATUS) when 'Approved' then 1 else 0 end), 0) AS total_application_approved,
       IFNULL(sum(case(p.NAME_CONTRACT_STATUS) when 'Unused offer' then 1 else 0 end), 0) AS total_application_unused,
-      sum(case(p.NAME_CONTRACT_STATUS) when 'Approved' then 1.0 when 'Unused offer' then 1.0 else 0.0 end) / count(p.SK_ID_CURR) AS ratio_app_approved_total
+      IFNULL(avg(case(p.NAME_CONTRACT_STATUS) when 'Refused' then p.AMT_APPLICATION else 0 end), 0) AS avg_application_refused,
+      IFNULL(avg(case(p.NAME_CONTRACT_STATUS) when 'Canceled' then p.AMT_APPLICATION else 0 end), 0) AS avg_application_canceled,
+      IFNULL(avg(case(p.NAME_CONTRACT_STATUS) when 'Approved' then p.AMT_APPLICATION else 0 end), 0) AS avg_application_approved,
+      IFNULL(avg(case(p.NAME_CONTRACT_STATUS) when 'Unused offer' then p.AMT_APPLICATION else 0 end), 0) AS avg_application_unused,
+      avg(case(p.NAME_CONTRACT_STATUS) when 'Approved' then 1.0 when 'Unused offer' then 1.0 else 0.0 end) AS ratio_app_approved_total,
+      IFNULL(avg(p.AMT_APPLICATION - p.AMT_CREDIT), 0) AS avg_diff_asked_offered
     from
       {table} app
     left join
@@ -29,7 +34,12 @@ def fte_prev_credit_situation(train, test, y, db_conn, folds, cache_file):
         'total_application_canceled',
         'total_application_approved',
         'total_application_unused',
-        'ratio_app_approved_total']] = pd.read_sql_query(query, db_conn)
+        'avg_application_refused',
+        'avg_application_canceled',
+        'avg_application_approved',
+        'avg_application_unused',
+        'ratio_app_approved_total',
+        'avg_diff_asked_offered']] = pd.read_sql_query(query, db_conn)
 
     # TODO add currency, otherwise credit is not comparable
 
