@@ -12,7 +12,8 @@ def fte_withdrawals(train, test, y, db_conn, folds, cache_file):
       avg(AMT_DRAWINGS_CURRENT) as cb_avg_withdrawal_amount,
       avg(CNT_DRAWINGS_POS_CURRENT) as cb_avg_pos_withdrawal_count,
       avg(AMT_DRAWINGS_POS_CURRENT) as cb_avg_pos_withdrawal_amount,
-      avg(SK_DPD) as cb_avg_day_past_due
+      avg(SK_DPD) as cb_avg_day_past_due,
+      avg(SK_DPD_DEF) as cb_avg_day_past_due_tolerated
     FROM
       {table} app
     left join
@@ -23,7 +24,7 @@ def fte_withdrawals(train, test, y, db_conn, folds, cache_file):
     group by
       ccb.sk_id_curr
     ORDER by
-      app.SK_ID_CURR
+      app.SK_ID_CURR ASC
     """
 
     df[[
@@ -34,6 +35,7 @@ def fte_withdrawals(train, test, y, db_conn, folds, cache_file):
       'cb_avg_pos_withdrawal_count',
       'cb_avg_pos_withdrawal_amount',
       'cb_avg_day_past_due',
+      'cb_avg_day_past_due_tolerated'
       ]] = pd.read_sql_query(query, db_conn)
 
   _trans(train, "application_train")

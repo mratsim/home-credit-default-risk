@@ -57,6 +57,8 @@ def encode_average(df, db_conn, table, joined_table, field):
     ) t on t.{field}_id = jt.{field}
   GROUP BY
     app.SK_ID_CURR
+  ORDER BY
+    app.SK_ID_CURR ASC;
   """
 
   return pd.read_sql_query(query, db_conn)
