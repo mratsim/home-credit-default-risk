@@ -18,5 +18,6 @@ pipe_transforms = feat_extraction_pipe(
   fte_organisation,
   fte_prev_credit_situation,
   fte_ext_source,
-  fte_family_situation
+  fte_family_situation,
+  fte_prev_credit_situation
 )
