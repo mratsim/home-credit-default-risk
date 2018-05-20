@@ -21,11 +21,14 @@ def xgb_output(X_test, sk_id_curr, classifier, n_stop, metric):
     'TARGET': predictions
     })
 
-  result.to_csv('./outputs/'+time.strftime("%Y-%m-%d_%H%M-")+'-valid'+str(metric)+'.csv', index=False)
+  str_metric = '{:.4f}'.format(round(metric,4))
+
+  result.to_csv('./outputs/'+time.strftime("%Y-%m-%d_%H%M-")+'-valid'+str_metric+'.csv', index=False)
 
   # Features importance
-  features_importance = xgb_features_importance(classifier, X_test.columns)
-  features_importance.to_csv('./outputs/'+time.strftime("%Y-%m-%d_%H%M-")+'-valid'+str(metric)+'-feature_importance.csv', index=False)
+  fi_by_importance, fi_by_feature = xgb_features_importance(classifier, X_test.columns)
+  fi_by_importance.to_csv('./outputs/'+time.strftime("%Y-%m-%d_%H%M-")+'-valid'+str_metric+'-feature_importance_by_importance.csv', index=False)
+  fi_by_feature.to_csv('./outputs/'+time.strftime("%Y-%m-%d_%H%M-")+'-valid'+str_metric+'-feature_importance_by_feature.csv', index=False)
 
   print('\n\nHere are the top 40 important features')
-  print(features_importance.head(40))
+  print(fi_by_importance.head(40))
