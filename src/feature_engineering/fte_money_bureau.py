@@ -13,7 +13,9 @@ def fte_prev_credit_situation(train, test, y, db_conn, folds, cache_file):
       IFNULL(sum(AMT_CREDIT_SUM_DEBT), 0) AS current_debt,
       IFNULL(sum(AMT_CREDIT_MAX_OVERDUE), 0) AS current_overdue,
       IFNULL(max(-DAYS_CREDIT / 365.25), 99) AS first_credit_years_ago,
-      IFNULL(min(-DAYS_CREDIT / 365.25), 99) AS last_credit_years_ago
+      IFNULL(min(-DAYS_CREDIT / 365.25), 99) AS last_credit_years_ago,
+      IFNULL(max(DAYS_CREDIT_ENDDATE / 365.25), -99) AS existing_credit_close_date,
+      IFNULL(max(-DAYS_ENDDATE_FACT / 365.25), 99) AS years_since_no_card_credit
     from
       {table} app
     left join
@@ -31,7 +33,10 @@ def fte_prev_credit_situation(train, test, y, db_conn, folds, cache_file):
         'current_debt',
         'current_overdue',
         'first_credit_years_ago',
-        'last_credit_years_ago']] = pd.read_sql_query(query, db_conn)
+        'last_credit_years_ago',
+        'existing_credit_close_date',
+        'years_since_no_card_credit'
+        ]] = pd.read_sql_query(query, db_conn)
 
     # TODO add currency, otherwise credit is not comparable
 

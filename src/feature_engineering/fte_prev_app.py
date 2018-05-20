@@ -18,6 +18,9 @@ def fte_prev_credit_situation(train, test, y, db_conn, folds, cache_file):
       IFNULL(avg(case(p.NAME_CONTRACT_STATUS) when 'Unused offer' then p.AMT_APPLICATION else 0 end), 0) AS avg_application_unused,
       avg(case(p.NAME_CONTRACT_STATUS) when 'Approved' then 1.0 when 'Unused offer' then 1.0 else 0.0 end) AS ratio_app_approved_total,
       IFNULL(avg(p.AMT_APPLICATION - p.AMT_CREDIT), 0) AS avg_diff_asked_offered
+      IFNULL(avg(p.CNT_PAYMENT), 0) AS avg_payment_schedule
+      IFNULL(avg(p.ANNUITY), 0) AS avg_annuity
+      IFNULL(avg(p.CNT_PAYMENT), 0) / app.ANNUITY AS ratio_annuity_prev_app
     from
       {table} app
     left join
@@ -39,7 +42,10 @@ def fte_prev_credit_situation(train, test, y, db_conn, folds, cache_file):
         'avg_application_approved',
         'avg_application_unused',
         'ratio_app_approved_total',
-        'avg_diff_asked_offered']] = pd.read_sql_query(query, db_conn)
+        'avg_diff_asked_offered',
+        'avg_payment_schedule',
+        'avg_annuity',
+        'ratio_annuity_prev_app']] = pd.read_sql_query(query, db_conn)
 
     # TODO add currency, otherwise credit is not comparable
 
