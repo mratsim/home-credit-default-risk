@@ -7,7 +7,7 @@ def fte_credit_inquiries(train, test, y, db_conn, folds, cache_file):
     query = f"""
     select
       AMT_REQ_CREDIT_BUREAU_DAY,
-      AMT_REQ_CREDIT_BUREAU_HOUR,
+      --AMT_REQ_CREDIT_BUREAU_HOUR,
       AMT_REQ_CREDIT_BUREAU_MON,
       AMT_REQ_CREDIT_BUREAU_QRT,
       AMT_REQ_CREDIT_BUREAU_WEEK,
@@ -19,7 +19,7 @@ def fte_credit_inquiries(train, test, y, db_conn, folds, cache_file):
     """
 
     df[['AMT_REQ_CREDIT_BUREAU_DAY',
-        'AMT_REQ_CREDIT_BUREAU_HOUR',
+    #    'AMT_REQ_CREDIT_BUREAU_HOUR',
         'AMT_REQ_CREDIT_BUREAU_MON',
         'AMT_REQ_CREDIT_BUREAU_QRT',
         'AMT_REQ_CREDIT_BUREAU_WEEK',

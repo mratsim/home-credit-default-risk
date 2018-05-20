@@ -27,5 +27,5 @@ def xgb_output(X_test, sk_id_curr, classifier, n_stop, metric):
   features_importance = xgb_features_importance(classifier, X_test.columns)
   features_importance.to_csv('./outputs/'+time.strftime("%Y-%m-%d_%H%M-")+'-valid'+str(metric)+'-feature_importance.csv', index=False)
 
-  print('\n\nHere are the top 20 important features')
-  print(features_importance.head(20))
+  print('\n\nHere are the top 40 important features')
+  print(features_importance.head(40))
