@@ -19,3 +19,13 @@ def fte_application_process(train, test, y, db_conn, folds, cache_file):
   _trans(test, "application_test")
 
   return train, test, y, db_conn, folds, cache_file
+
+def fte_contract(train, test, y, db_conn, folds, cache_file):
+  def _trans(df, table):
+    df['NAME_CONTRACT_TYPE']  = encode_categoricals(df, db_conn, table, 'NAME_CONTRACT_TYPE')
+    df['NAME_TYPE_SUITE'] = encode_categoricals(df, db_conn, table, 'NAME_TYPE_SUITE')
+
+  _trans(train, "application_train")
+  _trans(test, "application_test")
+
+  return train, test, y, db_conn, folds, cache_file
