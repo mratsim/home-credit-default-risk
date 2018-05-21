@@ -16,6 +16,7 @@ from src.feature_extraction.fte_region import fte_region
 from src.feature_extraction.fte_building import fte_building
 from src.feature_extraction.fte_social_circle_default import fte_social_circle_default
 from src.feature_extraction.fte_application_process import fte_application_process, fte_contract
+from src.feature_extraction.fte_magic_leaks import fte_magic_ids_leak
 
 pipe_transforms = feat_engineering_pipe(
   fte_income_ratios,
