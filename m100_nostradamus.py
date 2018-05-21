@@ -29,6 +29,10 @@ db_conn    = sqlite3.connect("./inputs/inputs.db")
 # Note: we should use try/finally to properly close the DB even if there are exceptions
 #       but let's have faith in Python GC
 
+# Optimize the db connection, don't forget to add the proper indexes as well
+db_conn('PRAGMA temp_store = MEMORY;')
+db_conn(f'PRAGMA cache_size = {1 << 18};') # Page_size = 4096, Cache = 4096 * 2^18 = 1 073 741 824 Bytes
+
 # Import data
 df_train = pd.read_sql_query("select SK_ID_CURR, TARGET from application_train order by SK_ID_CURR;", db_conn)
 print('Input training data has shape: ',df_train.shape)

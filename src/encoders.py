@@ -2,7 +2,6 @@
 
 import pandas as pd
 
-
 def encode_categoricals(df, db_conn, table, field):
   # I don't use Scikit-learn CategoricalEncoder or LabelBinarizer
   # Too much overhead, stateful, slow.
