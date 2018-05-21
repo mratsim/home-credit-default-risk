@@ -9,9 +9,9 @@ def fte_region(train, test, y, db_conn, folds, cache_file):
       REGION_POPULATION_RELATIVE,
       --REGION_RATING_CLIENT,
       REGION_RATING_CLIENT_W_CITY,
-      REG_CITY_NOT_LIVE_CITY
+      REG_CITY_NOT_LIVE_CITY,
       --REG_CITY_NOT_WORK_CITY,
-      --REG_REGION_NOT_LIVE_REGION
+      REG_REGION_NOT_LIVE_REGION
       --REG_REGION_NOT_WORK_REGION,
       --LIVE_REGION_NOT_WORK_REGION
     from
@@ -23,9 +23,9 @@ def fte_region(train, test, y, db_conn, folds, cache_file):
     df[['REGION_POPULATION_RELATIVE',
         # 'REGION_RATING_CLIENT',
         'REGION_RATING_CLIENT_W_CITY',
-        'REG_CITY_NOT_LIVE_CITY'
+        'REG_CITY_NOT_LIVE_CITY',
         # 'REG_CITY_NOT_WORK_CITY',
-        # 'REG_REGION_NOT_LIVE_REGION'
+        'REG_REGION_NOT_LIVE_REGION'
         # 'REG_REGION_NOT_WORK_REGION'
         # 'LIVE_REGION_NOT_WORK_REGION'
         ]] = pd.read_sql_query(query, db_conn)

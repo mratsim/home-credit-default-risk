@@ -20,22 +20,22 @@ def fte_family_situation(train, test, y, db_conn, folds, cache_file):
       case(CODE_GENDER)
         when "F" THEN 1
         else 0
-      end isWoman
-      --case(FLAG_OWN_CAR)
-      --  when "Y" THEN 1
-      --  else 0
-      --end ownCar,
-      --case(FLAG_OWN_REALTY)
-      --  when "Y" THEN 1
-      --  else 0
-      --end ownRealEstate
+      end isWoman,
+      case(FLAG_OWN_CAR)
+        when "Y" THEN 1
+        else 0
+      end ownCar,
+      case(FLAG_OWN_REALTY)
+        when "Y" THEN 1
+        else 0
+      end ownRealEstate
     from
       {table}
     ORDER BY
       SK_ID_CURR ASC;
     """
-    df[['CNT_CHILDREN', 'CNT_FAM_MEMBERS', 'isWoman'
-        # 'FLAG_OWN_CAR', 'FLAG_OWN_REALTY'
+    df[['CNT_CHILDREN', 'CNT_FAM_MEMBERS', 'isWoman',
+        'FLAG_OWN_CAR', 'FLAG_OWN_REALTY'
         ]] = pd.read_sql_query(query, db_conn)
 
   _trans(train, "application_train")
