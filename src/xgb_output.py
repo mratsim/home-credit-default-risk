@@ -3,18 +3,20 @@
 import xgboost as xgb
 import pandas as pd
 import time
+import logging
 from src.xgb_features_importance import xgb_features_importance
 
-def xgb_output(X_test, sk_id_curr, classifier, n_stop, metric):
-  print('Start predicting...')
+## Get the same logger from main"
+logger = logging.getLogger("HomeCredit")
 
+def xgb_output(X_test, sk_id_curr, classifier, n_stop, metric):
   # XGBoost
   xgtest = xgb.DMatrix(X_test)
   predictions = classifier.predict(xgtest, ntree_limit=n_stop)
 
   # debug
-  print('\n\nPredictions done. Here is a snippet')
-  print(predictions)
+  logger.info('\n\nPredictions done. Here is a snippet')
+  logger.info(predictions)
 
   result = pd.DataFrame({
     'SK_ID_CURR': sk_id_curr,

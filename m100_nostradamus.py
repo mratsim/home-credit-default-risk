@@ -5,8 +5,10 @@
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-import time
+import logging
 import sqlite3
+import time
+import os
 from timeit import default_timer as timer
 
 from sklearn.model_selection import StratifiedKFold, train_test_split
@@ -16,9 +18,15 @@ from sklearn.preprocessing import LabelEncoder
 from m110_feat_engineering_pipeline import pipe_transforms
 from src.xgb_output import xgb_output
 from src.xgb_train_cv import xgb_train_cv
+from src.instrumentation import setup_logs
 
 # Start timer
 start_time = timer()
+
+# Log
+str_timerun = time.strftime("%Y-%m-%d_%H%M")
+tmp_logfile = os.path.join('./outputs/', f'{str_timerun}--run-in-progress.log')
+logger = setup_logs(tmp_logfile)
 
 # Set random seed for reproducibility
 np.random.seed(1337)
@@ -35,7 +43,7 @@ db_conn(f'PRAGMA cache_size = {1 << 18};') # Page_size = 4096, Cache = 4096 * 2^
 
 # Import data
 df_train = pd.read_sql_query("select SK_ID_CURR, TARGET from application_train order by SK_ID_CURR;", db_conn)
-print('Input training data has shape: ',df_train.shape)
+logger.info(f'Input training data has shape: {df_train.shape}')
 
 X = df_train[['SK_ID_CURR']]
 y = df_train[['TARGET']]
@@ -48,11 +56,12 @@ cv = StratifiedKFold(n_splits=7, shuffle=True, random_state=1337)
 folds = list(cv.split(X,y))
 
 # Pipeline processing
+logger.info("   ===> Preprocessing")
 X, X_test, _, _, _, _ = pipe_transforms(X, X_test, y, db_conn, folds, cache_file)
-print('After preprocessing data shape is: ', X.shape)
+logger.info(f'After preprocessing data shape is: {X.shape}')
 
 end_time = timer()
-print("Preprocessing time: %s" % (end_time - start_time))
+logger.info("Preprocessing time: %s" % (end_time - start_time))
 
 ##############################
 # Setup basic XGBoost and validation
@@ -80,15 +89,20 @@ xgb_params = list(xgb_params.items())
 x_trn, x_val, y_trn, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train and validate
-print("\n############ Validation, Cross-Validation and Final Classifier ######################")
+logger.info("   ===> Validation, Cross-Validation and Final Classifier")
 clf, metric, n_stop = xgb_train_cv(x_trn, x_val, y_trn, y_val, X, y, xgb_params, folds)
 
 # Output
+logger.info("   ===> Start predictions")
 xgb_output(X_test, X_test['SK_ID_CURR'], clf, n_stop, metric)
 
 # Cleanup
 db_conn.close()
 
 end_time = timer()
-print("################## Success #########################")
-print("Elapsed time: %s" % (end_time - start_time))
+logger.info("   ===>  Success")
+logger.info("         Total elapsed time: %s" % (end_time - start_time))
+logging.shutdown()
+
+final_logfile = os.path.join('./outputs/', f'{str_timerun}---valid{metric:.4f}.log')
+os.rename(tmp_logfile, final_logfile)

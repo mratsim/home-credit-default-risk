@@ -5,7 +5,6 @@
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-import time
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import LabelEncoder
