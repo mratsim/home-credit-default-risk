@@ -7,6 +7,7 @@ from src.feature_engineering.fte_age import fte_age
 from src.feature_engineering.fte_money_bureau import fte_bureau_credit_situation
 from src.feature_engineering.fte_prev_app import fte_prev_credit_situation, fte_prev_app_process, fte_sales_channels
 from src.feature_engineering.fte_credit_balance import fte_withdrawals
+from src.feature_engineering.fte_pos_cash import fte_pos_cash_aggregate
 
 from src.feature_extraction.fte_application import fte_application, fte_app_categoricals
 
@@ -21,5 +22,6 @@ pipe_transforms = feat_engineering_pipe(
   fte_bureau_credit_situation,
   fte_prev_app_process,
   fte_sales_channels,
-  fte_withdrawals
+  fte_withdrawals,
+  fte_pos_cash_aggregate
 )
