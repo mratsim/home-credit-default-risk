@@ -79,7 +79,7 @@ def fte_prev_app_process(train, test, y, db_conn, folds, cache_file):
         end
       ) p_count_revolving_loans
     from
-      application_train app
+      {table} app
     left join
       previous_application p on app.SK_ID_CURR = p.SK_ID_CURR
     GROUP BY
