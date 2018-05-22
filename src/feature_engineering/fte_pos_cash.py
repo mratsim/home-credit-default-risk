@@ -55,3 +55,32 @@ def fte_pos_cash_aggregate(train, test, y, db_conn, folds, cache_file):
   save_to_cache(cache_file, cache_key_train, cache_key_test, train_cache, test_cache)
 
   return train, test, y, db_conn, folds, cache_file
+
+@logspeed
+def fte_pos_cash_current_status(train, test, y, db_conn, folds, cache_file):
+  ## Count the still active/completed/amortized debt credit
+
+  # In SQLite we avoid joining on temporary tables/subqueries/with-statement as they are not indexed
+  # and super-slow. ORDER BY on the following result is very slow to ...
+  # (~>1min vs 20ms for just dumping the result on i5-5257U)
+
+  query = """
+  SELECT
+    SK_ID_CURR, -- SK_ID_PREV,
+    NAME_CONTRACT_STATUS
+  FROM
+    POS_CASH_balance
+  GROUP BY
+    SK_ID_PREV
+	HAVING
+	  MONTHS_BALANCE = max(MONTHS_BALANCE)
+  """
+
+  pos_cash_current = pd.read_sql_query(query, db_conn)
+  # Pivot
+  pos_cash_current = pd.get_dummies(pos_cash_current, columns=['NAME_CONTRACT_STATUS']).groupby('SK_ID_CURR').sum()
+
+  train = train.merge(pos_cash_current, left_on='SK_ID_CURR', right_index=True, how = 'left', copy = False)
+  test = test.merge(pos_cash_current, left_on='SK_ID_CURR', right_index=True, how = 'left', copy = False)
+
+  return train, test, y, db_conn, folds, cache_file
