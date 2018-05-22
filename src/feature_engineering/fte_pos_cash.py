@@ -1,10 +1,30 @@
 # Copyright 2018 Mamy André-Ratsimbazafy. All rights reserved.
 
 import pandas as pd
+import logging
 from src.instrumentation import logspeed
+from src.cache import load_from_cache, save_to_cache
+
+## Get the same logger from main"
+logger = logging.getLogger("HomeCredit")
 
 @logspeed
 def fte_pos_cash_aggregate(train, test, y, db_conn, folds, cache_file):
+
+  cache_key_train = 'fte_pos_cash_aggregate_train'
+  cache_key_test = 'fte_pos_cash_aggregate_test'
+
+  # Check if cache file exist and if data for this step is cached
+  dict_train, dict_test = load_from_cache(cache_file, cache_key_train, cache_key_test)
+  if dict_train is not None and dict_test is not None:
+      logger.info('Cache found: fte_pos_cash_aggregate will use cached data')
+      train = train.assign(**dict_train)
+      test = test.assign(**dict_test)
+      return train, test, y, db_conn, folds, cache_file
+
+  logger.info('Cache not found: fte_pos_cash_aggregate will recompute from scratch')
+
+  ########################################################
 
   # SQLite doesn't have stddev function, revert to Pandas
   # Note that the DB has 10M rows
@@ -27,32 +47,11 @@ def fte_pos_cash_aggregate(train, test, y, db_conn, folds, cache_file):
   train = train.merge(agg_POS_CASH, left_on='SK_ID_CURR', right_index=True, how = 'left', copy = False)
   test = test.merge(agg_POS_CASH, left_on='SK_ID_CURR', right_index=True, how = 'left', copy = False)
 
-  ## Count the still active credits
-  ## This is slow on SQLite (single threaded + no index for the subquery/view) ~55s on my i5-5227U dual-core
-  #
-  # WITH current_poscash as (
-  # 	select
-  # 	  SK_ID_CURR, -- SK_ID_PREV,
-  # 	  case when
-  # 	    (MONTHS_BALANCE = max(MONTHS_BALANCE))
-  # 	    and
-  # 	    (NAME_CONTRACT_STATUS = 'Active')
-  # 	    THEN 1 ELSE 0
-  # 	  end isActive
-  # 	FROM
-  # 	  POS_CASH_balance
-  # 	group BY
-  # 	  SK_ID_PREV
-  #   )
-  # select
-  #   app.SK_ID_CURR, IFNULL(sum(current_poscash.isActive), 0) AS pos_count_active
-  # from
-  #   application_train app
-  # inner join current_poscash
-  #   on app.SK_ID_CURR = current_poscash.SK_ID_CURR
-  # GROUP BY
-  #   app.SK_ID_CURR
-  # ORDER BY
-  #   app.SK_ID_CURR
+  ########################################################
+
+  logger.info(f'Caching features in {cache_file}')
+  train_cache = train[agg_POS_CASH.columns].to_dict()
+  test_cache = test[agg_POS_CASH.columns].to_dict()
+  save_to_cache(cache_file, cache_key_train, cache_key_test, train_cache, test_cache)
 
   return train, test, y, db_conn, folds, cache_file
