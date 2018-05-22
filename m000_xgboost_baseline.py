@@ -9,8 +9,7 @@ from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import LabelEncoder
 
-from src.xgb_output import xgb_output
-from src.xgb_train_cv import xgb_train_cv
+from src.xgb_processing import xgb_validate, xgb_cross_val, xgb_output
 
 # Import data
 df_train = pd.read_csv(open("./inputs/application_train.csv", "r"))
@@ -59,12 +58,22 @@ folds = list(cv.split(X,y))
 x_trn, x_val, y_trn, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train and validate
-print("############ Validation, Cross-Validation and Final Classifier ######################")
-clf, metric, n_stop = xgb_train_cv(x_trn, x_val, y_trn, y_val, X, y, xgb_params, folds)
+print("############ Validation ######################")
+val_score = xgb_validate(x_trn, x_val, y_trn, y_val, xgb_params, seed_val = 0)
+
+print("############ Cross - Validation ######################")
+n_stop = xgb_cross_val(xgb_params, X, y, folds)
+n_stop = np.int(n_stop * 1.1) # Full dataset is 25% bigger, so we want a bit of leeway on stopping round to avoid overfitting.
+
+print("############ Training ######################")
+xgtrain = xgb.DMatrix(X, y)
+classifier = xgb.train(xgb_params, xgtrain, n_stop)
 
 # Output + feature importance
+print("############ Preprocessing test data ######################")
 df_test = pd.read_csv(open("./inputs/application_test.csv", "r"))
 for feat, encoder in zip(categoricals, encoders):
     df_test[feat] = encoder.transform(df_test[feat].astype('str'))
 
-xgb_output(df_test, df_test['SK_ID_CURR'], clf, n_stop, metric)
+print("############ Prediction ######################")
+xgb_output(df_test, df_test['SK_ID_CURR'], classifier, n_stop, val_score)

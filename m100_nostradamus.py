@@ -14,10 +14,10 @@ from timeit import default_timer as timer
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import LabelEncoder
+import xgboost as xgb
 
 from m110_feat_engineering_pipeline import pipe_transforms
-from src.xgb_output import xgb_output
-from src.xgb_train_cv import xgb_train_cv
+from src.xgb_processing import xgb_validate, xgb_cross_val, xgb_output
 from src.instrumentation import setup_logs
 
 # Start timer
@@ -86,15 +86,23 @@ xgb_params = list(xgb_params.items())
 ###############################
 
 # Quick validation to get a unique name
+logger.info("   ===> Validation")
 x_trn, x_val, y_trn, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+val_score = xgb_validate(x_trn, x_val, y_trn, y_val, xgb_params, seed_val = 0)
 
-# Train and validate
-logger.info("   ===> Validation, Cross-Validation and Final Classifier")
-clf, metric, n_stop = xgb_train_cv(x_trn, x_val, y_trn, y_val, X, y, xgb_params, folds)
+# Cross validation
+logger.info("   ===> Cross-Validation")
+n_stop = xgb_cross_val(xgb_params, X, y, folds)
+n_stop = np.int(n_stop * 1.1) # Full dataset is 25% bigger, so we want a bit of leeway on stopping round to avoid overfitting.
+
+# Training
+logger.info("   ===> Training")
+xgtrain = xgb.DMatrix(X, y)
+classifier = xgb.train(xgb_params, xgtrain, n_stop)
 
 # Output
 logger.info("   ===> Start predictions")
-xgb_output(X_test, X_test['SK_ID_CURR'], clf, n_stop, metric)
+xgb_output(X_test, X_test['SK_ID_CURR'], classifier, n_stop, val_score)
 
 # Cleanup
 db_conn.close()
@@ -104,5 +112,5 @@ logger.info("   ===>  Success")
 logger.info("         Total elapsed time: %s" % (end_time - start_time))
 logging.shutdown()
 
-final_logfile = os.path.join('./outputs/', f'{str_timerun}---valid{metric:.4f}.log')
+final_logfile = os.path.join('./outputs/', f'{str_timerun}---valid{val_score:.4f}.log')
 os.rename(tmp_logfile, final_logfile)
