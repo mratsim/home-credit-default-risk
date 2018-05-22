@@ -112,5 +112,5 @@ logger.info("   ===>  Success")
 logger.info("         Total elapsed time: %s" % (end_time - start_time))
 logging.shutdown()
 
-final_logfile = os.path.join('./outputs/', f'{str_timerun}---valid{val_score:.4f}.log')
+final_logfile = os.path.join('./outputs/', f'{str_timerun}--valid{val_score:.4f}.log')
 os.rename(tmp_logfile, final_logfile)

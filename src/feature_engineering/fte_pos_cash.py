@@ -15,14 +15,14 @@ def fte_pos_cash_aggregate(train, test, y, db_conn, folds, cache_file):
   cache_key_test = 'fte_pos_cash_aggregate_test'
 
   # Check if cache file exist and if data for this step is cached
-  dict_train, dict_test = load_from_cache(cache_file, cache_key_train, cache_key_test)
-  if dict_train is not None and dict_test is not None:
-      logger.info('Cache found: fte_pos_cash_aggregate will use cached data')
-      train = train.assign(**dict_train)
-      test = test.assign(**dict_test)
+  train_cached, test_cached = load_from_cache(cache_file, cache_key_train, cache_key_test)
+  if train_cached is not None and test_cached is not None:
+      logger.info('fte_pos_cash_aggregate - Cache found, will use cached data')
+      train = pd.concat([train, train_cached], axis = 1, copy = False)
+      test = pd.concat([test, test_cached], axis = 1, copy = False)
       return train, test, y, db_conn, folds, cache_file
 
-  logger.info('Cache not found: fte_pos_cash_aggregate will recompute from scratch')
+  logger.info('fte_pos_cash_aggregate - Cache not found, will recompute from scratch')
 
   ########################################################
 
@@ -50,8 +50,8 @@ def fte_pos_cash_aggregate(train, test, y, db_conn, folds, cache_file):
   ########################################################
 
   logger.info(f'Caching features in {cache_file}')
-  train_cache = train[agg_POS_CASH.columns].to_dict()
-  test_cache = test[agg_POS_CASH.columns].to_dict()
+  train_cache = train[agg_POS_CASH.columns]
+  test_cache = test[agg_POS_CASH.columns]
   save_to_cache(cache_file, cache_key_train, cache_key_test, train_cache, test_cache)
 
   return train, test, y, db_conn, folds, cache_file
@@ -59,6 +59,21 @@ def fte_pos_cash_aggregate(train, test, y, db_conn, folds, cache_file):
 @logspeed
 def fte_pos_cash_current_status(train, test, y, db_conn, folds, cache_file):
   ## Count the still active/completed/amortized debt credit
+
+  cache_key_train = 'fte_pos_cash_current_status_train'
+  cache_key_test = 'fte_pos_cash_current_status_test'
+
+  # Check if cache file exist and if data for this step is cached
+  train_cached, test_cached = load_from_cache(cache_file, cache_key_train, cache_key_test)
+  if train_cached is not None and test_cached is not None:
+      logger.info('fte_pos_cash_current_status - Cache found, will use cached data')
+      train = pd.concat([train, train_cached], axis = 1, copy = False)
+      test = pd.concat([test, test_cached], axis = 1, copy = False)
+      return train, test, y, db_conn, folds, cache_file
+
+  logger.info('fte_pos_cash_current_status - Cache not found, will recompute from scratch')
+
+  ########################################################
 
   # In SQLite we avoid joining on temporary tables/subqueries/with-statement as they are not indexed
   # and super-slow. ORDER BY on the following result is very slow to ...
@@ -82,5 +97,12 @@ def fte_pos_cash_current_status(train, test, y, db_conn, folds, cache_file):
 
   train = train.merge(pos_cash_current, left_on='SK_ID_CURR', right_index=True, how = 'left', copy = False)
   test = test.merge(pos_cash_current, left_on='SK_ID_CURR', right_index=True, how = 'left', copy = False)
+
+  ########################################################
+
+  logger.info(f'Caching features in {cache_file}')
+  train_cache = train[pos_cash_current.columns]
+  test_cache = test[pos_cash_current.columns]
+  save_to_cache(cache_file, cache_key_train, cache_key_test, train_cache, test_cache)
 
   return train, test, y, db_conn, folds, cache_file

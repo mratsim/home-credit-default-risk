@@ -10,14 +10,14 @@ def load_from_cache(cache_file, key_train, key_test):
     if os.path.isfile(cache_file):
         with shelve.open(cache_file, flag='r', protocol=HIGHEST_PROTOCOL) as db:
             if (key_train in db) and (key_test in db):
-                dict_train = db[key_train]
-                dict_test = db[key_test]
+                train_cached = db[key_train]
+                test_cached = db[key_test]
                 # db.close()
-                return dict_train, dict_test
+                return train_cached, test_cached
     return None, None
 
-def save_to_cache(cache_file, key_train, key_test, dict_train, dict_test):
+def save_to_cache(cache_file, key_train, key_test, train_cached, test_cached):
     with shelve.open(cache_file, flag='c', protocol=HIGHEST_PROTOCOL) as db:
-        db[key_train] = dict_train
-        db[key_test] = dict_test
+        db[key_train] = train_cached
+        db[key_test] = test_cached
         # db.close()
