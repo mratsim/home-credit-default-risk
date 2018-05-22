@@ -1,7 +1,9 @@
 # Copyright 2018 Mamy André-Ratsimbazafy. All rights reserved.
 
 import pandas as pd
+from src.instrumentation import logspeed
 
+@logspeed
 def fte_pos_cash_aggregate(train, test, y, db_conn, folds, cache_file):
 
   # SQLite doesn't have stddev function, revert to Pandas

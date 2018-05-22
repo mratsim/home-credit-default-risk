@@ -1,7 +1,9 @@
 # Copyright 2018 Mamy André-Ratsimbazafy. All rights reserved.
 
 import pandas as pd
+from src.instrumentation import logspeed
 
+@logspeed
 def fte_income_ratios(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
     query = f"""

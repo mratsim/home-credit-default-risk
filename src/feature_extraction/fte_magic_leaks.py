@@ -1,10 +1,12 @@
 # Copyright 2018 Mamy André-Ratsimbazafy. All rights reserved.
 
 import pandas as pd
+from src.instrumentation import logspeed
 
 # A collection of features that predict by proxy
 # but are not supposed to have any predictive power
 
+@logspeed
 def fte_magic_ids_leak(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
     query = f"""

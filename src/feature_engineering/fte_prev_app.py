@@ -2,7 +2,9 @@
 
 import pandas as pd
 from src.encoders import encode_average
+from src.instrumentation import logspeed
 
+@logspeed
 def fte_prev_credit_situation(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
     query = f"""
@@ -57,6 +59,7 @@ def fte_prev_credit_situation(train, test, y, db_conn, folds, cache_file):
 
   return train, test, y, db_conn, folds, cache_file
 
+@logspeed
 def fte_prev_app_process(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
     query = f"""
@@ -102,6 +105,7 @@ def fte_prev_app_process(train, test, y, db_conn, folds, cache_file):
 
   return train, test, y, db_conn, folds, cache_file
 
+@logspeed
 def fte_sales_channels(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
     df['p_avg_seller_size'] = encode_average(df, db_conn, table, 'previous_application', 'SELLERPLACE_AREA')

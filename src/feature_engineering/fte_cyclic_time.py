@@ -2,7 +2,9 @@
 
 import pandas as pd
 import numpy as np
+from src.instrumentation import logspeed
 
+@logspeed
 def fte_cyclic_time(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
     query = f"""

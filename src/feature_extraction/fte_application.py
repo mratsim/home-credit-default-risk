@@ -2,7 +2,9 @@
 
 import pandas as pd
 from src.encoders import encode_categoricals
+from src.instrumentation import logspeed
 
+@logspeed
 def fte_application(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
     query = f"""

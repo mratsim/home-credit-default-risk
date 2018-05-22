@@ -32,6 +32,6 @@ def logspeed(f):
     start = timer()
     result = f(*args, **kwargs)
     end = timer()
-    logger.info(f'{f.__name__} - elapsed time: {end-start} seconds')
+    logger.info(f'{f.__name__} - elapsed time: {end-start:.4f} seconds')
     return result
   return wrapper
