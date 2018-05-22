@@ -13,7 +13,7 @@ from src.feature_extraction.fte_application import fte_application, fte_app_cate
 
 pipe_transforms = feat_engineering_pipe(
   fte_application,
-  # fte_app_categoricals,
+  fte_app_categoricals,
   fte_income_ratios,
   fte_cyclic_time,
   fte_goods_price,

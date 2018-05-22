@@ -40,7 +40,7 @@ def xgb_validate(x_trn, x_val, y_trn, y_val, xgb_params, seed_val=0, num_rounds=
 # so it better mimics out-of-sample predictions
 def xgb_cross_val(params, X, y, folds):
 
-    logger.info('Cross validating Stratified 7-fold... and retrieving best stopping round')
+    logger.info('Cross validating Stratified 7-fold... and retrieving best stopping round.\n')
     n = 1
     num_rounds = 3000
 

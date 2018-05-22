@@ -135,7 +135,24 @@ def fte_application(train, test, y, db_conn, folds, cache_file):
 
   return train, test, y, db_conn, folds, cache_file
 
+@logspeed
 def fte_app_categoricals(train, test, y, db_conn, folds, cache_file):
+
+  cache_key_train = 'fte_app_categoricals_train'
+  cache_key_test = 'fte_app_categoricals_test'
+
+  # Check if cache file exist and if data for this step is cached
+  train_cached, test_cached = load_from_cache(cache_file, cache_key_train, cache_key_test)
+  if train_cached is not None and test_cached is not None:
+      logger.info('fte_app_categoricals - Cache found, will use cached data')
+      train = pd.concat([train, train_cached], axis = 1, copy = False)
+      test = pd.concat([test, test_cached], axis = 1, copy = False)
+      return train, test, y, db_conn, folds, cache_file
+
+  logger.info('fte_app_categoricals - Cache not found, will recompute from scratch')
+
+  ########################################################
+
   def _trans(df, table):
     df['NAME_CONTRACT_TYPE']  = encode_categoricals(df, db_conn, table, 'NAME_CONTRACT_TYPE')
     df['NAME_TYPE_SUITE'] = encode_categoricals(df, db_conn, table, 'NAME_TYPE_SUITE')
@@ -148,5 +165,20 @@ def fte_app_categoricals(train, test, y, db_conn, folds, cache_file):
 
   _trans(train, "application_train")
   _trans(test, "application_test")
+
+  ########################################################
+
+  columns =  ['NAME_CONTRACT_TYPE',
+              'NAME_TYPE_SUITE',
+              'OCCUPATION_TYPE',
+              'ORGANIZATION_TYPE',
+              'NAME_INCOME_TYPE',
+              'NAME_EDUCATION_TYPE',
+              'NAME_FAMILY_STATUS',
+              'NAME_HOUSING_TYPE']
+  logger.info(f'Caching features in {cache_file}')
+  train_cache = train[columns]
+  test_cache = test[columns]
+  save_to_cache(cache_file, cache_key_train, cache_key_test, train_cache, test_cache)
 
   return train, test, y, db_conn, folds, cache_file

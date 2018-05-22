@@ -61,7 +61,7 @@ X, X_test, _, _, _, _ = pipe_transforms(X, X_test, y, db_conn, folds, cache_file
 logger.info(f'After preprocessing data shape is: {X.shape}')
 
 end_time = timer()
-logger.info("Preprocessing time: %s" % (end_time - start_time))
+logger.info("Preprocessing time: %s seconds.\n" % (end_time - start_time))
 
 ##############################
 # Setup basic XGBoost and validation
