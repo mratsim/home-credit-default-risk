@@ -8,7 +8,7 @@ def fte_bureau_credit_situation(train, test, y, db_conn, folds, cache_file):
   def _trans(df, table):
     query = f"""
     select
-      IFNULL(count(b.SK_ID_CURR), 0) AS b_total_prev_applications,
+      IFNULL(count(b.SK_ID_BUREAU), 0) AS b_total_prev_applications,
       IFNULL(sum(case CREDIT_ACTIVE when 'Active' then 1 else 0 end), 0) AS b_current_active_applications,
       IFNULL(sum(AMT_CREDIT_SUM), 0) AS b_total_prev_credit,
       IFNULL(sum(case CREDIT_ACTIVE when 'Active' then AMT_CREDIT_SUM else 0 end), 0) AS b_active_credit_amount,
