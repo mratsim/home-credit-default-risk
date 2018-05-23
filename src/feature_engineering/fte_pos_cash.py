@@ -38,7 +38,7 @@ def fte_pos_cash_aggregate(train, test, y, db_conn, folds, cache_file):
       dict(MONTHS_BALANCE = ["sum","mean","max","min","std"],
           CNT_INSTALMENT = ["sum","mean","max","min","std"],
           CNT_INSTALMENT_FUTURE = ["sum","mean","max","min","std"],
-          SK_DPD = ["sum","mean","max","min","std"],
+          SK_DPD = ["sum","mean","max","std"], # dropping mean
           SK_DPD_DEF = ["sum","mean","max","min","std"],
           SK_ID_CURR = 'count')
       )
@@ -94,6 +94,9 @@ def fte_pos_cash_current_status(train, test, y, db_conn, folds, cache_file):
   pos_cash_current = pd.read_sql_query(query, db_conn)
   # Pivot
   pos_cash_current = pd.get_dummies(pos_cash_current, columns=['NAME_CONTRACT_STATUS']).groupby('SK_ID_CURR').sum()
+
+  # TODO: add a proper feature selection phase
+  pos_cash_current.drop(columns=['NAME_CONTRACT_STATUS_Signed', 'NAME_CONTRACT_STATUS_Returned to the store'])
 
   train = train.merge(pos_cash_current, left_on='SK_ID_CURR', right_index=True, how = 'left', copy = False)
   test = test.merge(pos_cash_current, left_on='SK_ID_CURR', right_index=True, how = 'left', copy = False)
