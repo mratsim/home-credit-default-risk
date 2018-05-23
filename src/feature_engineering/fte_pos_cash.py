@@ -82,7 +82,7 @@ def fte_pos_cash_current_status(train, test, y, db_conn, folds, cache_file):
   query = """
   SELECT
     SK_ID_CURR, -- SK_ID_PREV,
-    NAME_CONTRACT_STATUS
+    NAME_CONTRACT_STATUS AS pos_cash_NAME_CONTRACT_STATUS
   FROM
     POS_CASH_balance
   GROUP BY
@@ -93,10 +93,10 @@ def fte_pos_cash_current_status(train, test, y, db_conn, folds, cache_file):
 
   pos_cash_current = pd.read_sql_query(query, db_conn)
   # Pivot
-  pos_cash_current = pd.get_dummies(pos_cash_current, columns=['NAME_CONTRACT_STATUS']).groupby('SK_ID_CURR').sum()
+  pos_cash_current = pd.get_dummies(pos_cash_current, columns=['pos_cash_NAME_CONTRACT_STATUS']).groupby('SK_ID_CURR').sum()
 
   # TODO: add a proper feature selection phase
-  pos_cash_current.drop(columns=['NAME_CONTRACT_STATUS_Signed', 'NAME_CONTRACT_STATUS_Returned to the store'])
+  pos_cash_current = pos_cash_current[['pos_cash_NAME_CONTRACT_STATUS_Active', 'pos_cash_NAME_CONTRACT_STATUS_Completed']]
 
   train = train.merge(pos_cash_current, left_on='SK_ID_CURR', right_index=True, how = 'left', copy = False)
   test = test.merge(pos_cash_current, left_on='SK_ID_CURR', right_index=True, how = 'left', copy = False)
