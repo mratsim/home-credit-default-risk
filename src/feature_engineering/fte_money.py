@@ -12,10 +12,10 @@ def fte_income_ratios(train, test, y, db_conn, folds, cache_file):
       AMT_ANNUITY / AMT_INCOME_TOTAL AS annuity_income_ratio,
       AMT_CREDIT / AMT_ANNUITY AS credit_annuity_ratio,
       AMT_CREDIT / AMT_GOODS_PRICE as credit_price_ratio,
-      AMT_INCOME_TOTAL / CNT_CHILDREN AS income_per_child, --If no children, div by 0, infinite income
+      AMT_INCOME_TOTAL / (1e-5 + CNT_CHILDREN) AS income_per_child, --If no children, div by epsilon, ~infinite income
       AMT_INCOME_TOTAL / CNT_FAM_MEMBERS AS income_per_person,
       AMT_INCOME_TOTAL / (CNT_FAM_MEMBERS - CNT_CHILDREN) AS income_per_adult,
-      AMT_CREDIT / CNT_CHILDREN AS credit_per_child, --If no children, div by 0, infinite income
+      AMT_CREDIT / (1e-5 + CNT_CHILDREN) AS credit_per_child, --If no children, div by epsilon, ~infinite income
       AMT_CREDIT / CNT_FAM_MEMBERS AS credit_per_person,
       AMT_CREDIT / (CNT_FAM_MEMBERS - CNT_CHILDREN) AS credit_per_adult,
       AMT_CREDIT,
