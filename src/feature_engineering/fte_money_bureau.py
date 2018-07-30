@@ -30,8 +30,11 @@ def fte_bureau_credit_situation(train, test, y, db_conn, folds, cache_file):
     query = f"""
     select
       IFNULL(count(b.SK_ID_BUREAU), 0) AS b_total_prev_applications,
-      IFNULL(sum(case CREDIT_ACTIVE when 'Active' then 1 else 0 end), 0) AS b_current_active_applications,
+      IFNULL(sum(case CREDIT_ACTIVE when 'Active' then 1 else 0 end), 0) AS b_current_active_credit,
+      IFNULL(sum(case CREDIT_ACTIVE when 'Sold' then 1 else 0 end), 0) AS b_sold_credit,
+      IFNULL(sum(case CREDIT_ACTIVE when 'Bad debt' then 1 else 0 end), 0) AS b_bad_debt_credit,
       IFNULL(avg(case CREDIT_ACTIVE when 'Active' then 1 else 0 end), 0) AS b_active_applications_ratio,
+      IFNULL(count(distinct CREDIT_TYPE), 0) AS b_nb_distinct_credit_type,
       IFNULL(sum(AMT_CREDIT_SUM), 0) AS b_total_prev_credit,
       IFNULL(sum(case CREDIT_ACTIVE when 'Active' then AMT_CREDIT_SUM else 0 end), 0) AS b_active_credit_amount,
       IFNULL(sum(AMT_CREDIT_SUM_DEBT), 0) AS b_current_debt,
@@ -46,7 +49,8 @@ def fte_bureau_credit_situation(train, test, y, db_conn, folds, cache_file):
         when 'currency_2' then 1
         when 'currency_3' then 2
         else 3
-      end b_currency
+      end b_currency,
+      IFNULL(sum(CNT_CREDIT_PROLONG), 0) AS b_credit_days_extension
     from
       {table} app
     left join
@@ -62,8 +66,11 @@ def fte_bureau_credit_situation(train, test, y, db_conn, folds, cache_file):
     # TODO add currency, otherwise credit is not comparable
 
   columns = ['b_total_prev_applications',
-        'b_current_active_applications',
+        'b_current_active_credit',
+        'b_sold_credit',
+        'b_bad_debt_credit',
         'b_active_applications_ratio',
+        'b_nb_distinct_credit_type',
         'b_total_prev_credit',
         'b_active_credit_amount',
         'b_current_debt',
@@ -73,7 +80,8 @@ def fte_bureau_credit_situation(train, test, y, db_conn, folds, cache_file):
         'b_existing_credit_close_date',
         'b_years_since_no_card_credit',
         # 'b_last_DAYS_CREDIT_UPDATE',
-        'b_currency'
+        'b_currency',
+        'b_credit_days_extension'
         ]
 
   _trans(train, "application_train", columns)
