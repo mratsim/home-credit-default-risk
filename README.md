@@ -180,44 +180,43 @@ This makes it easy to use diff to check which features were added/removed and th
 
 # Scalable
 
-All the instrumentation provided makes it much easier to keep track on what is going on and not have the dreaded "oh what did I change, I had a much better results previously".
+1. All the instrumentation provided makes it much easier to keep track on what is going on and not have the dreaded "oh what did I change, I had a much better results previously".
+  It also makes it much easier to collaborate on the same model.
 
-It also makes it much easier to collaborate on the same model.
+2. Pipeline transformations are all done in a [single file](m110_feat_engineering_pipeline.py) and can be easily commented in or out:
 
-Pipeline transformations are all done in a [single file](m110_feat_engineering_pipeline.py) and can be easily commented in or out:
+    ```Python
+    from src.star_command import feat_engineering_pipe
+    from src.feature_engineering.fte_money import fte_income_ratios, fte_goods_price
+    from src.feature_engineering.fte_cyclic_time import fte_cyclic_time
+    from src.feature_engineering.fte_age import fte_age
+    from src.feature_engineering.fte_money_bureau import fte_bureau_credit_situation
+    from src.feature_engineering.fte_prev_app import fte_prev_credit_situation, fte_prev_app_process, fte_sales_channels
+    from src.feature_engineering.fte_credit_balance import fte_withdrawals
+    from src.feature_engineering.fte_pos_cash import fte_pos_cash_aggregate, fte_pos_cash_current_status
+    from src.feature_engineering.fte_installment_pmt import fte_missed_installments
 
-```Python
-from src.star_command import feat_engineering_pipe
-from src.feature_engineering.fte_money import fte_income_ratios, fte_goods_price
-from src.feature_engineering.fte_cyclic_time import fte_cyclic_time
-from src.feature_engineering.fte_age import fte_age
-from src.feature_engineering.fte_money_bureau import fte_bureau_credit_situation
-from src.feature_engineering.fte_prev_app import fte_prev_credit_situation, fte_prev_app_process, fte_sales_channels
-from src.feature_engineering.fte_credit_balance import fte_withdrawals
-from src.feature_engineering.fte_pos_cash import fte_pos_cash_aggregate, fte_pos_cash_current_status
-from src.feature_engineering.fte_installment_pmt import fte_missed_installments
+    from src.feature_extraction.fte_application import fte_application, fte_app_categoricals
 
-from src.feature_extraction.fte_application import fte_application, fte_app_categoricals
+    pipe_transforms = feat_engineering_pipe(
+      fte_application,
+      fte_app_categoricals,
+      fte_income_ratios,
+      fte_cyclic_time,
+      fte_goods_price,
+      fte_age,
+      fte_prev_credit_situation,
+      fte_bureau_credit_situation,
+      fte_prev_app_process,
+      fte_sales_channels,
+      fte_withdrawals,
+      fte_pos_cash_aggregate,
+      fte_pos_cash_current_status,
+      fte_missed_installments
+    )
+    ```
 
-pipe_transforms = feat_engineering_pipe(
-  fte_application,
-  fte_app_categoricals,
-  fte_income_ratios,
-  fte_cyclic_time,
-  fte_goods_price,
-  fte_age,
-  fte_prev_credit_situation,
-  fte_bureau_credit_situation,
-  fte_prev_app_process,
-  fte_sales_channels,
-  fte_withdrawals,
-  fte_pos_cash_aggregate,
-  fte_pos_cash_current_status,
-  fte_missed_installments
-)
-```
-
-And being SQL based means that this can be done on big data and clusters.
+3. It supports sparse dataframes and being SQL based means that this can be done on big data and clusters.
 
 # Conclusion
 
