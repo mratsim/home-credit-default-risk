@@ -22,7 +22,6 @@ However you will hopefully find an inspiring way to architecture your ML project
 
 ![](img/teaser_feat_eng.png)
 ![](img/teaser_cross_val.png)
-![](img/teaser_feat_eng.png)
 ![](img/teaser_preditions_feat_importance.png)
 
 # Fast to run and iterate
