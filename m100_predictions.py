@@ -12,8 +12,6 @@ import os
 from timeit import default_timer as timer
 
 from sklearn.model_selection import StratifiedKFold, train_test_split
-from sklearn.metrics import roc_auc_score
-from sklearn.preprocessing import LabelEncoder
 import xgboost as xgb
 
 from m110_feat_engineering_pipeline import pipe_transforms
