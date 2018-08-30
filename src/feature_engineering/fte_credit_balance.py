@@ -28,17 +28,17 @@ def fte_withdrawals(train, test, y, db_conn, folds, cache_file):
 
   def _trans(df, table, columns):
     query = f"""
-    --with instalments_per_app AS (
-    --  select
-    --    SK_ID_CURR,
-    --    max(CNT_INSTALMENT_MATURE_CUM) AS nb_installments
-    --  from
-    --    credit_card_balance
-    --  GROUP BY
-    --    SK_ID_CURR, SK_ID_PREV
-    --  ORDER BY
-    --    SK_ID_CURR
-    --  )
+    with instalments_per_app AS (
+      select
+        SK_ID_CURR,
+        max(CNT_INSTALMENT_MATURE_CUM) AS nb_installments
+      from
+        credit_card_balance
+      GROUP BY
+        SK_ID_CURR, SK_ID_PREV
+      ORDER BY
+        SK_ID_CURR
+      )
     select
       count(distinct SK_ID_PREV) as cb_nb_of_credit_cards,
       avg(CNT_DRAWINGS_ATM_CURRENT) as cb_avg_atm_withdrawal_count,
@@ -56,10 +56,10 @@ def fte_withdrawals(train, test, y, db_conn, folds, cache_file):
     left join
       credit_card_balance ccb
         on app.SK_ID_CURR = ccb.SK_ID_CURR
-    -- left join
-    --   instalments_per_app ipa
-    --     on ipa.SK_ID_CURR = ccb.SK_ID_CURR
-    -- where
+    left join
+      instalments_per_app ipa
+        on ipa.SK_ID_CURR = ccb.SK_ID_CURR
+    --where
     --  MONTHS_BALANCE BETWEEN -3 and -1
     group by
       ccb.sk_id_curr

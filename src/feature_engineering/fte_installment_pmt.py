@@ -29,7 +29,8 @@ def fte_missed_installments(train, test, y, db_conn, folds, cache_file):
   query = """
   select
     SK_ID_CURR,
-    AMT_INSTALMENT - AMT_PAYMENT AS DIFF_EXPECTED_PMT
+    AMT_INSTALMENT - AMT_PAYMENT AS DIFF_EXPECTED_PMT,
+    DAYS_ENTRY_PAYMENT - DAYS_INSTALMENT AS DAYS_LATE
   from
     installments_payments
   """
