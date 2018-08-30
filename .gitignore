@@ -1,6 +1,5 @@
 *.csv
 *.7z
-*.jpg
 *.h5
 *.npy
 *.npz
