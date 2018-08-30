@@ -6,7 +6,7 @@ import numpy as np
 import time
 import logging
 from sklearn.metrics import roc_auc_score
-from src.xgb_features_importance import xgb_features_importance
+from src.xgb_processing import xgb_features_importance
 
 ## Get the same logger from main"
 logger = logging.getLogger("HomeCredit")
