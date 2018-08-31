@@ -2,15 +2,29 @@
 
 This is code I built for the [Home Credit default risk competition on Kaggle.](https://www.kaggle.com/c/home-credit-default-risk) This should be seen more as an ML engineering achievement than a data science top of the line prediction model.
 
-If you want to run the code go to Starting point, if you're curious about the repo, read on and skip the starting point.
+# What will you find in the repo?
 
+First of all, due to time constraints this is not a top scorer. First rank was 0.80570 AUC (499 submissions), this is 0.78212 AUC (12 submissions).
+
+However you will hopefully find an inspiring way to architecture your ML project in a fast, scalable and maintainable way. It also demonstrate how to to machine learning on top of existing SQL databases instead of loading everything in Pandas.
+
+# Teasers
+
+![](img/teaser_feat_eng.png)
+![](img/teaser_cross_val.png)
+![](img/teaser_preditions_feat_importance.png)
+
+# Table of Contents
+
+If you're a Kaggler and just want to run the code go to Starting point. Otherwise, skip the starting point and go directly to the competition description.
 - [Home Credit default risk](#home-credit-default-risk)
-- [Description of the competition](#description-of-the-competition)
+- [What will you find in the repo?](#what-will-you-find-in-the-repo)
+- [Teasers](#teasers)
+- [Table of Contents](#table-of-contents)
 - [Starting point](#starting-point)
   - [Adding new features](#adding-new-features)
   - [Feature selection](#feature-selection)
-- [What will you find in the repo?](#what-will-you-find-in-the-repo)
-- [Teasers](#teasers)
+- [Description of the competition](#description-of-the-competition)
 - [Fast to run and iterate](#fast-to-run-and-iterate)
   - [SQL](#sql)
   - [Caching](#caching)
@@ -22,16 +36,6 @@ If you want to run the code go to Starting point, if you're curious about the re
     - [Features ordered by features](#features-ordered-by-features)
 - [Scalable](#scalable)
 - [Conclusion](#conclusion)
-
-# Description of the competition
-
-Many people struggle to get loans due to insufficient or non-existent credit histories. And, unfortunately, this population is often taken advantage of by untrustworthy lenders.
-
-![Home Credit Group](./img/about-us-home-credit.jpg)
-
-[Home Credit](http://www.homecredit.net/) strives to broaden financial inclusion for the unbanked population by providing a positive and safe borrowing experience. In order to make sure this underserved population has a positive loan experience, Home Credit makes use of a variety of alternative data--including telco and transactional information--to predict their clients' repayment abilities.
-
-While Home Credit is currently using various statistical and machine learning methods to make these predictions, they're challenging Kagglers to help them unlock the full potential of their data. Doing so will ensure that clients capable of repayment are not rejected and that loans are given with a principal, maturity, and repayment calendar that will empower their clients to be successful.
 
 # Starting point
 
@@ -115,17 +119,15 @@ In this example we built features from scratch but this framework also offers ad
 
   The `None` can be any Sklearn `Rescaler`, `CategoricalEncoder` or even a TfIDF + TruncatedSVD Sklearn pipeline
 
-# What will you find in the repo?
+# Description of the competition
 
-First of all, due to time constraints this is not a top scorer. First rank was 0.80570 AUC (499 submissions), this is 0.78212 AUC (12 submissions).
+Many people struggle to get loans due to insufficient or non-existent credit histories. And, unfortunately, this population is often taken advantage of by untrustworthy lenders.
 
-However you will hopefully find an inspiring way to architecture your ML project in a fast, scalable and maintainable way. It also demonstrate how to to machine learning on top of existing SQL databases instead of loading everything in Pandas.
+![Home Credit Group](./img/about-us-home-credit.jpg)
 
-# Teasers
+[Home Credit](http://www.homecredit.net/) strives to broaden financial inclusion for the unbanked population by providing a positive and safe borrowing experience. In order to make sure this underserved population has a positive loan experience, Home Credit makes use of a variety of alternative data--including telco and transactional information--to predict their clients' repayment abilities.
 
-![](img/teaser_feat_eng.png)
-![](img/teaser_cross_val.png)
-![](img/teaser_preditions_feat_importance.png)
+While Home Credit is currently using various statistical and machine learning methods to make these predictions, they're challenging Kagglers to help them unlock the full potential of their data. Doing so will ensure that clients capable of repayment are not rejected and that loans are given with a principal, maturity, and repayment calendar that will empower their clients to be successful.
 
 # Fast to run and iterate
 
