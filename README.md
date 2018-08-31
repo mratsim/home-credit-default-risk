@@ -2,6 +2,27 @@
 
 This is code I built for the [Home Credit default risk competition on Kaggle.](https://www.kaggle.com/c/home-credit-default-risk) This should be seen more as an ML engineering achievement than a data science top of the line prediction model.
 
+If you want to run the code go to Starting point, if you're curious about the repo, read on and skip the starting point.
+
+- [Home Credit default risk](#home-credit-default-risk)
+- [Description of the competition](#description-of-the-competition)
+- [Starting point](#starting-point)
+  - [Adding new features](#adding-new-features)
+  - [Feature selection](#feature-selection)
+- [What will you find in the repo?](#what-will-you-find-in-the-repo)
+- [Teasers](#teasers)
+- [Fast to run and iterate](#fast-to-run-and-iterate)
+  - [SQL](#sql)
+  - [Caching](#caching)
+  - [Comparision with Sklearn pipelines](#comparision-with-sklearn-pipelines)
+- [Maintainable](#maintainable)
+  - [Simple clean code](#simple-clean-code)
+  - [Keep track of experiments](#keep-track-of-experiments)
+    - [Features by importance](#features-by-importance)
+    - [Features ordered by features](#features-ordered-by-features)
+- [Scalable](#scalable)
+- [Conclusion](#conclusion)
+
 # Description of the competition
 
 Many people struggle to get loans due to insufficient or non-existent credit histories. And, unfortunately, this population is often taken advantage of by untrustworthy lenders.
@@ -11,6 +32,88 @@ Many people struggle to get loans due to insufficient or non-existent credit his
 [Home Credit](http://www.homecredit.net/) strives to broaden financial inclusion for the unbanked population by providing a positive and safe borrowing experience. In order to make sure this underserved population has a positive loan experience, Home Credit makes use of a variety of alternative data--including telco and transactional information--to predict their clients' repayment abilities.
 
 While Home Credit is currently using various statistical and machine learning methods to make these predictions, they're challenging Kagglers to help them unlock the full potential of their data. Doing so will ensure that clients capable of repayment are not rejected and that loans are given with a principal, maturity, and repayment calendar that will empower their clients to be successful.
+
+# Starting point
+
+The code expects all CSVs to be stored in a SQlite database in `./inputs/inputs.db`.
+Data is available on [Kaggle Home Credit default risk competition](https://dbeaver.io/):
+
+I used csvs-to-sqlite https://github.com/simonw/csvs-to-sqlite, which is built on top of Pandas. Note that the new [DBeaver 5.1.5](https://dbeaver.io/) added CSV import, it's my recommended SQL browser in any case.
+
+Expected table names are:
+  - application_train
+  - application_test
+  - previous_application
+  - bureau
+  - bureau_balance
+  - credit_card_balance
+  - installments_payments
+  - POS_CASH_balance
+
+and optionnally:
+  - HomeCredit_columns_description
+  - sample_submission
+
+Run `python m000_xgboost_baseline.py` to get a baseline score with just `application_train`/`application_test`
+
+Run `python m100_predictions.py` to see the full pipeline in action.
+
+## Adding new features
+
+If you want to edit a feature engineering step:
+
+  - Plain feature extraction is done in the files in `./src/feature_extraction`
+  - Feature engineering in `./src/feature_engineering`
+
+Each step accepts:
+  - train data
+  - test data
+  - labels/target
+  - database connection
+  - your folds
+  - a cache file
+
+If you want to add a complete new step, follow one of the already existing examples.
+
+The framework offers the following features:
+
+- `@logspeed` decorator to log your step speed
+- `logger = logging.getLogger("HomeCredit")` to load the commandline and CSV logger and display custom messages.
+- Cache the train and test results of your step. If you want to clear the cache edit and run `./del_from_cache.py`
+- You can use the `y` target labels and `folds` for advanced out-of-folds predictions. I recommend you cache them afterwards.
+  An example can be found in a very old version of this pipeline: https://github.com/mratsim/Apartment-Interest-Prediction/blob/master/src/transformers_nlp_tfidf.py#L42
+
+## Feature selection
+
+In this example we built features from scratch but this framework also offers advanced feature selection similar to the `sklearn-pandas` package. See there: https://github.com/mratsim/meilleur-data-scientist-france-2018/blob/master/m110_feat_eng.py#L17-L36
+  ```Python
+  select_feat = [
+    ("encoded_etat", None),
+    ("encoded_nom_magasin", None),
+    ("prix", None),
+    ("nb_images", None),
+    ("longueur_image", None),
+    ("largeur_image", None),
+    ("poids", None),
+    ("encoded_categorie", None),
+    ("encoded_sous_categorie_1", None),
+    ("encoded_sous_categorie_2", None),
+    ("encoded_sous_categorie_3", None),
+    ("encoded_sous_categorie_4", None),
+    ("description_produit", [TfidfVectorizer(max_features=2**16,
+                             min_df=2, stop_words='english',
+                             use_idf=True),
+                             TruncatedSVD(2)]),
+    ("encoded_couleur", None),
+    ("vintage", None)
+  ]
+  ```
+  and https://github.com/mratsim/meilleur-data-scientist-france-2018/blob/master/m000_baseline.py#L85
+  ```Python
+  X_train, X_test = feat_selection(select_feat, X, X_test, y)
+  ```
+
+  The `None` can be any Sklearn `Rescaler`, `CategoricalEncoder` or even a TfIDF + TruncatedSVD Sklearn pipeline
 
 # What will you find in the repo?
 
